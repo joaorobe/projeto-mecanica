@@ -133,37 +133,37 @@ const steps = [
 
 const gallery = [
   {
-    src: "/manus-storage/oficina-008_281a4b43.png",
+    src: "/assets/fachada.webp",
     alt: "Fachada da Mecânica Cesar dos Santos",
     className: "gallery-feature",
     label: "Nossa fachada",
   },
   {
-    src: "/manus-storage/oficina-036_c6ccb706.png",
+    src: "/assets/oficina-atendimento.webp",
     alt: "Veículos em atendimento dentro da oficina",
     className: "gallery-wide",
     label: "Área de atendimento",
   },
   {
-    src: "/manus-storage/oficina-027_f476e364.png",
+    src: "/assets/bancada-tecnica.webp",
     alt: "Bancada técnica da oficina",
     className: "gallery-small",
     label: "Precisão técnica",
   },
   {
-    src: "/manus-storage/oficina-030_db1e3b8c.png",
+    src: "/assets/estoque-01.webp",
     alt: "Prateleiras com produtos automotivos",
     className: "gallery-small",
     label: "Tudo à mão",
   },
   {
-    src: "/manus-storage/oficina-033_9f028b12.png",
+    src: "/assets/estoque-02.webp",
     alt: "Estoque de produtos e peças",
     className: "gallery-small",
     label: "Organização",
   },
   {
-    src: "/manus-storage/oficina-039_0b548150.png",
+    src: "/assets/estoque-03.webp",
     alt: "Interior da oficina Mecânica Cesar",
     className: "gallery-small",
     label: "Nosso espaço",
@@ -291,7 +291,7 @@ export default function Home() {
         <section className="about-section" id="oficina">
           <div className="content-wrap about-grid">
             <div className="about-media">
-              <img src="/manus-storage/oficina-036_c6ccb706.png" alt="Interior da oficina com veículos em atendimento" />
+              <img src="/assets/oficina-atendimento.webp" alt="Interior da oficina com veículos em atendimento" />
               <div className="about-stamp"><span>CESAR</span><strong>Desde o<br />primeiro diagnóstico</strong><i /></div>
               <div className="about-caption"><span>01</span> Atenção em cada etapa</div>
             </div>
