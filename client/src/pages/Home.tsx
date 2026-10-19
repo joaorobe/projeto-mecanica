@@ -6,6 +6,7 @@ import {
   CarFront,
   Check,
   ChevronRight,
+  ChevronLeft,
   Clock3,
   Crosshair,
   Gauge,
@@ -21,7 +22,8 @@ import {
   Wrench,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 
 const PHONE_DISPLAY = "(53) 99146-4596";
 const PHONE_TEL = "+5553991464596";
@@ -188,6 +190,35 @@ function SectionLabel({ children, light = false }: { children: string; light?: b
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
+  const [selectedGallery, setSelectedGallery] = useState(0);
+  const [galleryAutoplay, setGalleryAutoplay] = useState(true);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll<HTMLElement>(".reveal-on-scroll");
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")),
+      { threshold: 0.12, rootMargin: "0px 0px -7%" },
+    );
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedGallery(emblaApi.selectedScrollSnap());
+    onSelect();
+    emblaApi.on("select", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi || !galleryAutoplay) return;
+    const timer = window.setInterval(() => emblaApi.scrollNext(), 5000);
+    return () => window.clearInterval(timer);
+  }, [emblaApi, galleryAutoplay]);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -219,10 +250,10 @@ export default function Home() {
       </header>
 
       <main>
-        <section className="hero-section">
+        <section className="hero-section reveal-on-scroll">
           <div className="hero-bg" />
           <div className="hero-grid" />
-          <div className="hero-content content-wrap">
+          <div className="hero-content content-wrap reveal-target">
             <div className="hero-copy">
               <SectionLabel light>Oficina mecânica em Pelotas</SectionLabel>
               <h1>Seu carro pede<br /><em>cuidado de verdade.</em></h1>
@@ -255,8 +286,8 @@ export default function Home() {
           <a className="hero-scroll" href="#servicos"><span /> Role para conhecer</a>
         </section>
 
-        <section className="proof-strip">
-          <div className="content-wrap proof-grid">
+        <section className="proof-strip reveal-on-scroll">
+          <div className="content-wrap proof-grid reveal-target">
             <div className="proof-intro"><span className="proof-kicker">Cuidado técnico local</span><strong>Manutenção para seguir em frente.</strong></div>
             <div className="proof-item"><b>01</b><span>Diagnóstico<br />direcionado</span></div>
             <div className="proof-item"><b>02</b><span>Serviço completo<br />em um só lugar</span></div>
@@ -264,8 +295,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section services-section" id="servicos">
-          <div className="content-wrap services-layout">
+        <section className="section services-section reveal-on-scroll" id="servicos">
+          <div className="content-wrap services-layout reveal-target">
             <div className="section-intro services-intro">
               <SectionLabel>O que fazemos</SectionLabel>
               <h2>Um olhar técnico para <span>cada detalhe.</span></h2>
@@ -288,8 +319,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="about-section" id="oficina">
-          <div className="content-wrap about-grid">
+        <section className="about-section reveal-on-scroll" id="oficina">
+          <div className="content-wrap about-grid reveal-target">
             <div className="about-media">
               <img src="/assets/oficina-atendimento.webp" alt="Interior da oficina com veículos em atendimento" />
               <div className="about-stamp"><span>CESAR</span><strong>Desde o<br />primeiro diagnóstico</strong><i /></div>
@@ -306,8 +337,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section differences-section" id="diferenciais">
-          <div className="content-wrap">
+        <section className="section differences-section reveal-on-scroll" id="diferenciais">
+          <div className="content-wrap reveal-target">
             <div className="section-heading-row">
               <div><SectionLabel>Por que a Mecânica Cesar</SectionLabel><h2>Confiança se constrói<br /><span>no jeito de fazer.</span></h2></div>
               <p>Você não precisa entender de mecânica para ser bem atendido. Precisa encontrar quem explique com clareza e cumpra o combinado.</p>
@@ -321,8 +352,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="process-section" id="processo">
-          <div className="content-wrap">
+        <section className="process-section reveal-on-scroll" id="processo">
+          <div className="content-wrap reveal-target">
             <div className="section-heading-row process-heading">
               <div><SectionLabel>Como funciona</SectionLabel><h2>Do primeiro contato<br />à <span>entrega.</span></h2></div>
               <p>Sem mistério, sem pressão e sem serviço que você não aprovou. Um processo simples para você dirigir tranquilo.</p>
@@ -334,24 +365,34 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="gallery-section" id="fotos">
-          <div className="content-wrap">
+        <section className="gallery-section reveal-on-scroll" id="fotos">
+          <div className="content-wrap reveal-target">
             <div className="section-heading-row gallery-heading"><div><SectionLabel>Conheça nosso espaço</SectionLabel><h2>Trabalho sério<br /><span>por dentro e por fora.</span></h2></div><p>Um espaço organizado para receber seu carro com segurança e executar cada etapa com cuidado.</p></div>
-            <div className="gallery-grid">
-              {gallery.map((image) => <a href={image.src} target="_blank" rel="noreferrer" className={`gallery-item ${image.className}`} key={image.src}><img src={image.src} alt={image.alt} /><span>{image.label} <ArrowUpRight /></span></a>)}
+            <div className="gallery-carousel-shell" onClick={() => setGalleryAutoplay(false)} onPointerDown={() => setGalleryAutoplay(false)}>
+              <div className="gallery-carousel" ref={emblaRef}>
+                <div className="gallery-track">
+                  {gallery.map((image) => <a href={image.src} target="_blank" rel="noreferrer" className="gallery-slide" key={image.src}><img src={image.src} alt={image.alt} /><span>{image.label} <ArrowUpRight /></span></a>)}
+                </div>
+              </div>
+              <div className="gallery-controls">
+                <div className="gallery-dots" aria-label="Navegação da galeria">
+                  {gallery.map((image, index) => <button type="button" key={image.src} className={selectedGallery === index ? "is-active" : ""} aria-label={`Ir para foto ${index + 1}`} onClick={() => emblaApi?.scrollTo(index)} />)}
+                </div>
+                <div className="gallery-arrows"><button type="button" aria-label="Foto anterior" onClick={() => emblaApi?.scrollPrev()}><ChevronLeft size={18} /></button><button type="button" aria-label="Próxima foto" onClick={() => emblaApi?.scrollNext()}><ChevronRight size={18} /></button></div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="contact-section" id="contato">
+        <section className="contact-section reveal-on-scroll" id="contato">
           <div className="contact-orbit orbit-one" /><div className="contact-orbit orbit-two" />
-          <div className="content-wrap contact-grid">
+          <div className="content-wrap contact-grid reveal-target">
             <div className="contact-copy"><SectionLabel light>Onde e quando</SectionLabel><h2>Quando seu carro<br />pedir, <em>chame a gente.</em></h2><p>Estamos prontos para ouvir, avaliar e orientar o melhor caminho para o seu veículo.</p><div className="contact-buttons"><a className="button button-red" href={WHATSAPP_URL} target="_blank" rel="noreferrer"><MessageCircle size={18} /> Chamar no WhatsApp</a><a className="button button-ghost" href={`tel:${PHONE_TEL}`}><Phone size={17} /> {PHONE_DISPLAY}</a></div></div>
             <div className="contact-details"><div className="contact-detail"><span className="detail-icon"><MapPin size={19} /></span><div><small>Onde estamos</small><strong>Av. Duque de Caxias, 955</strong><p>Fragata, Pelotas — RS<br />96030-003</p><a href={MAPS_URL} target="_blank" rel="noreferrer">Abrir no mapa <ArrowRight size={15} /></a></div></div><div className="contact-detail"><span className="detail-icon"><Clock3 size={19} /></span><div><small>Horário de atendimento</small><strong>Segunda a sexta</strong><p>8:15 às 18:30</p><strong>Sábado</strong><p>9:00 às 12:00</p></div></div></div>
           </div>
         </section>
 
-        <section className="final-cta"><div className="content-wrap final-cta-inner"><div className="final-mark"><Hammer size={22} /></div><div><SectionLabel>Seu carro merece</SectionLabel><h2>O cuidado certo,<br /><span>no lugar certo.</span></h2></div><a className="button button-red" href={WHATSAPP_URL} target="_blank" rel="noreferrer">Falar com a Mecânica Cesar <ArrowRight size={17} /></a></div></section>
+        <section className="final-cta reveal-on-scroll"><div className="content-wrap final-cta-inner reveal-target"><div className="final-mark"><Hammer size={22} /></div><div><SectionLabel>Seu carro merece</SectionLabel><h2>O cuidado certo,<br /><span>no lugar certo.</span></h2></div><a className="button button-red" href={WHATSAPP_URL} target="_blank" rel="noreferrer">Falar com a Mecânica Cesar <ArrowRight size={17} /></a></div></section>
       </main>
 
       <footer className="site-footer"><div className="content-wrap footer-grid"><div className="footer-brand"><BrandMark compact /><p>Diagnóstico certo. Reparo seguro. Seu carro em boas mãos.</p></div><div className="footer-links"><strong>Navegue</strong><a href="#servicos">Serviços</a><a href="#oficina">A oficina</a><a href="#processo">Como funciona</a><a href="#contato">Contato</a></div><div className="footer-contact"><strong>Fale com a gente</strong><a href={WHATSAPP_URL} target="_blank" rel="noreferrer"><MessageCircle size={15} /> WhatsApp</a><a href={`tel:${PHONE_TEL}`}><Phone size={15} /> {PHONE_DISPLAY}</a><span><MapPin size={15} /> Pelotas — RS</span></div></div><div className="content-wrap footer-bottom"><span>© {new Date().getFullYear()} Mecânica Cesar dos Santos</span><span>Feito para cuidar melhor do seu carro.</span></div></footer>
