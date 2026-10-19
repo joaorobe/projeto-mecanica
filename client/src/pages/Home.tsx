@@ -216,7 +216,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!emblaApi || !galleryAutoplay) return;
-    const timer = window.setInterval(() => emblaApi.scrollNext(), 5000);
+    const timer = window.setInterval(() => emblaApi.scrollNext(), 2000);
     return () => window.clearInterval(timer);
   }, [emblaApi, galleryAutoplay]);
 
